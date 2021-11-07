@@ -1,4 +1,4 @@
-package com.umc.hugo.model.User;
+package com.umc.hugo.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

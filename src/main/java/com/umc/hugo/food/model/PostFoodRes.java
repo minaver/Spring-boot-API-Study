@@ -1,12 +1,12 @@
-package com.umc.hugo.model.review;
+package com.umc.hugo.food.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
-public class PostReviewRes {
-    private int reviewIdx;
+public class PostFoodRes {
+    private int foodIdx;
 }

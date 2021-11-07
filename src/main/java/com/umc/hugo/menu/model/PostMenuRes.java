@@ -1,4 +1,4 @@
-package com.umc.hugo.model.menu;
+package com.umc.hugo.menu.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

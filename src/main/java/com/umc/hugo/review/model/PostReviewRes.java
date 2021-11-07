@@ -1,4 +1,4 @@
-package com.umc.hugo.model.Food;
+package com.umc.hugo.review.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class PostFoodReq {
-    private String name;
-    private String foodImgUrl;
+public class PostReviewRes {
+    private int reviewIdx;
 }

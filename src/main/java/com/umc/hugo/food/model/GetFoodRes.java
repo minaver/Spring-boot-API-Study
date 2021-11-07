@@ -1,4 +1,4 @@
-package com.umc.hugo.model.Food;
+package com.umc.hugo.food.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
