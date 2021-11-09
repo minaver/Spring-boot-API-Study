@@ -1,38 +1,44 @@
 package com.umc.hugo.food;
 
+import com.umc.hugo.config.BaseResponse;
+import com.umc.hugo.food.FoodProvider;
 import com.umc.hugo.food.model.GetFoodRes;
 import com.umc.hugo.food.model.PostFoodReq;
 import com.umc.hugo.food.model.PostFoodRes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+@RestController
+@RequestMapping("/app/foods")
 
 public class FoodController {
 
     private FoodProvider foodProvider;
+    private FoodService foodService;
 
     @Autowired
-    public FoodController(FoodProvider foodProvider){
+    public FoodController(FoodProvider foodProvider,FoodService foodService){
         this.foodProvider = foodProvider;
+        this.foodService = foodService;
     }
 
-    //GET
-    @GetMapping("/foods")
-    public List<GetFoodRes> getFood(){
+    // GET
+    // Get ALL Types of Food
+    @GetMapping("")
+    public BaseResponse<List<GetFoodRes>> getFood(){
         List<GetFoodRes> foodRes = foodProvider.getFood();
         System.out.println("food");
-        return foodRes;
+        return new BaseResponse<>(foodRes);
     }
 
-    //POST
+    // POST
+    // Post new Type of Food
     @ResponseBody
     @PostMapping("/food")
-    public PostFoodRes postFood(@RequestBody PostFoodReq postFoodReq){
-        PostFoodRes postFoodRes = foodProvider.postFood(postFoodReq);
-        return postFoodRes;
+    public BaseResponse<PostFoodRes> postFood(@RequestBody PostFoodReq postFoodReq){
+        PostFoodRes postFoodRes = foodService.postFood(postFoodReq);
+        return new BaseResponse<>(postFoodRes);
     }
 }

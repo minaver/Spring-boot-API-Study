@@ -4,10 +4,12 @@ import com.umc.hugo.food.model.GetFoodRes;
 import com.umc.hugo.food.model.PostFoodReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
 
+@Repository
 public class FoodDao {
 
     private JdbcTemplate jdbcTemplate;

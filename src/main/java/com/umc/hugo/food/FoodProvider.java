@@ -3,13 +3,16 @@ package com.umc.hugo.food;
 import com.umc.hugo.food.model.GetFoodRes;
 import com.umc.hugo.food.model.PostFoodReq;
 import com.umc.hugo.food.model.PostFoodRes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-//@Service
+@Service
 public class FoodProvider {
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FoodDao foodDao;
 
@@ -26,11 +29,5 @@ public class FoodProvider {
         return foodRes;
     }
 
-    //POST
-    public PostFoodRes postFood(PostFoodReq postFoodReq){
-        int foodIdx= foodDao.addFood(postFoodReq);
-        PostFoodRes postFoodRes = new PostFoodRes(foodIdx);
-        return postFoodRes;
-    }
 
 }
