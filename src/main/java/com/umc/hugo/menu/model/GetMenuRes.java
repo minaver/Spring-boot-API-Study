@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class GetMenuRes {
-    private String storeName;
     private String name;
     private String menuImgUrl;
     private String menuInfoMsg;

@@ -1,9 +1,12 @@
 package com.umc.hugo.menu;
 
 import com.umc.hugo.config.BaseResponse;
+import com.umc.hugo.config.MenuResponse;
+import com.umc.hugo.food.Food;
 import com.umc.hugo.menu.model.GetMenuRes;
 import com.umc.hugo.menu.model.PostMenuReq;
 import com.umc.hugo.menu.model.PostMenuRes;
+import com.umc.hugo.store.Store;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +27,18 @@ public class MenuController {
     }
 
     @GetMapping("/{store}")
-    public BaseResponse<List<GetMenuRes>> getMenu(@PathVariable("store") int store ){
-        List<GetMenuRes> menuRes = menuProvider.getMenu(store);
-        return new BaseResponse<>(menuRes);
+    public MenuResponse<List<GetMenuRes>,String> getMenu(@PathVariable("store") int storeIdx ){
+        List<GetMenuRes> menuRes = menuProvider.getMenu(storeIdx);
+
+        // For Get Food Name
+        Food food = menuProvider.getFood(storeIdx);
+        String foodName = food.getName();
+
+        // For Get Store Name
+        Store store = menuProvider.getStore(storeIdx);
+        String storeName = store.getName();
+
+        return new MenuResponse<>(menuRes,foodName,storeName);
     }
 
     @ResponseBody

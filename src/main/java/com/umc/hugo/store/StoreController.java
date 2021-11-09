@@ -3,6 +3,7 @@ package com.umc.hugo.store;
 import com.umc.hugo.config.BaseException;
 import com.umc.hugo.config.BaseResponse;
 import com.umc.hugo.config.FoodResponse;
+import com.umc.hugo.config.StoreResponse;
 import com.umc.hugo.food.Food;
 import com.umc.hugo.store.model.GetStoreRes;
 import com.umc.hugo.store.model.PostStoreReq;
@@ -28,7 +29,7 @@ public class StoreController {
     // 출력 방법은 idx, star, review 로 가능하다.
     // + 총 가게 수 몇개인지 출력하는문 함께 추가
     @GetMapping("/{foodIdx}")
-    public FoodResponse<List<GetStoreRes>,String> getStore(@PathVariable("foodIdx") int foodIdx, @RequestParam(required = false) String order){
+    public StoreResponse<List<GetStoreRes>,String> getStore(@PathVariable("foodIdx") int foodIdx, @RequestParam(required = false) String order){
         if(order == null) // if order parameter is null allocate default value(idx)
             order = "idx";
 
@@ -36,7 +37,7 @@ public class StoreController {
         Food food = storeProvider.getFood(foodIdx);
         String foodName = food.getName();
 
-        return new FoodResponse<>(storeRes,foodName);
+        return new StoreResponse<>(storeRes,foodName);
     }
 
     @ResponseBody
