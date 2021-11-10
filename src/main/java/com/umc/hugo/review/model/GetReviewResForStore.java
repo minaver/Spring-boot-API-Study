@@ -7,7 +7,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class GetReviewRes {
+public class GetReviewResForStore {
+    private String name;
     private float reviewStar;
     private String reviewImgUrl;
     private String reviewMsg;

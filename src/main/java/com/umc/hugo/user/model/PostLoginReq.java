@@ -7,13 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class GetUserRes {
-    private int userIdx;
-    private String name;
+public class PostLoginReq {
     private String email;
     private String password;
-    private int mailFlag;
-    private int smsFlag;
-    private String profileImgUrl;
 }
-

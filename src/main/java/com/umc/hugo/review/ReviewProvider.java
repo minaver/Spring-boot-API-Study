@@ -1,8 +1,8 @@
 package com.umc.hugo.review;
 
-import com.umc.hugo.review.model.GetReviewRes;
-import com.umc.hugo.review.model.PostReviewReq;
-import com.umc.hugo.review.model.PostReviewRes;
+import com.umc.hugo.review.model.*;
+import com.umc.hugo.store.Store;
+import com.umc.hugo.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,33 @@ public class ReviewProvider {
     }
 
     //GET
-    public List<GetReviewRes> getReview(int store){
-        List<GetReviewRes> reviewRes = reviewDao.reviewRes(store);
+    public List<GetReviewRes> getReview(int storeIdx, int userIdx){
+        List<GetReviewRes> reviewRes = reviewDao.reviewRes(storeIdx,userIdx);
+
+        return reviewRes;
+    }
+    public List<GetReviewResForUser> getReviewForUser(int userIdx){
+        List<GetReviewResForUser> reviewRes = reviewDao.reviewResForUser(userIdx);
+
+        return reviewRes;
+    }
+    public List<GetReviewResForStore> getReviewForStore(int storeIdx){
+        List<GetReviewResForStore> reviewRes = reviewDao.reviewResForStore(storeIdx);
 
         return reviewRes;
     }
 
+    // Inner function
+    // Get User Info
+    public User getUser(int userIdx){
+        User user = reviewDao.getUser(userIdx);
+
+        return user;
+    }
+    // Get Store Info
+    public Store getStore(int storeIdx){
+        Store store = reviewDao.getStore(storeIdx);
+
+        return store;
+    }
 }

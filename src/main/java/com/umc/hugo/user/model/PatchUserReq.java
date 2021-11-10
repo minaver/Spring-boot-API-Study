@@ -7,9 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class PostUserReq {
+public class PatchUserReq {
+    private String userIdx;
     private String name;
-    private String email;
-    private String password;
-    private String profileImgUrl;
 }
