@@ -31,6 +31,20 @@ public enum BaseResponseStatus {
     POST_USERS_INVALID_EMAIL(false, 2016, "이메일 형식을 확인해주세요."),
     POST_USERS_EXISTS_EMAIL(false,2017,"중복된 이메일입니다."),
 
+    // [POST]
+    POST_EMPTY_URL(false, 2019, "URL을 입력해주세요."),
+    POST_INVALID_URL(false, 2020, "URL 형식을 확인해주세요."),
+
+    // [PATCH]
+    PATCH_EMPTY_BODY(false, 2101, "Body 정보가 비어있습니다."),
+    PATCH_OVER_SIZE(false, 2101, "Body 정보가 비어있습니다."),
+
+    // [PATCH] /pw
+    PATCH_NOW_PASSWORD_WRONG(false, 2111, "현재 비밀번호가 잘못되었습니다."),
+
+    // [PATCH] /menus/status
+    PATCH_INVALID_STATUS(false,2121,"지원하지 않는 STATUS 형식입니다."),
+
 
 
     /**
@@ -53,6 +67,18 @@ public enum BaseResponseStatus {
 
     //[PATCH] /users/{userIdx}
     MODIFY_FAIL_USERNAME(false,4014,"유저네임 수정 실패"),
+
+    //[PATCH] /food/{foodIdx}
+    MODIFY_FAIL_FOODNAME(false,4015,"음식이름수정 실패"),
+    MODIFY_FAIL_FOODIMGURL(false,4016,"음식ImgUrl 수정 실패"),
+
+    //[PATCH] /menu/{menuIdx}
+    MODIFY_FAIL_MENUNAME(false,4015,"메뉴이름수정 실패"),
+    MODIFY_FAIL_MENUIMGURL(false,4016,"메뉴ImgUrl 수정 실패"),
+
+    //[PATCH] /store/{storeIdx}
+    MODIFY_FAIL_STORENAME(false,4017,"식당이름수정 실패"),
+    MODIFY_FAIL_STOREIMGURL(false,4018,"식당ImgUrl 수정 실패"),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
