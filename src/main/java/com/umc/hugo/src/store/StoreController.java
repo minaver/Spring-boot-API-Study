@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.umc.hugo.config.BaseResponseStatus.POST_EMPTY_URL;
-import static com.umc.hugo.config.BaseResponseStatus.POST_INVALID_URL;
+import static com.umc.hugo.config.BaseResponseStatus.*;
 import static com.umc.hugo.util.ValidationRegex.isUrl;
 
 @RestController
@@ -33,8 +32,13 @@ public class StoreController {
     // + 총 가게 수 몇개인지 출력하는문 함께 추가
     @GetMapping("/{foodIdx}")
     public StoreResponse<List<GetStoreRes>,String> getStore(@PathVariable("foodIdx") int foodIdx, @RequestParam(required = false) String order){
-        if(order == null) // if order parameter is null allocate default value(idx)
+        // if order parameter is null allocate default value(idx)
+        if(order == null)
             order = "idx";
+        // order 변수가 idx, star, review 중에 있는지 확인 Validation
+        if(!order.equals("idx") && !order.equals("star") && !order.equals("review")){
+            return new StoreResponse<>(GET_INVALID_ORDER);
+        }
 
         List<GetStoreRes> storeRes = storeProvider.getStore(foodIdx,order);
         Food food = storeProvider.getFood(foodIdx);

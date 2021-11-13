@@ -45,7 +45,8 @@ public enum BaseResponseStatus {
     // [PATCH] /menus/status
     PATCH_INVALID_STATUS(false,2121,"지원하지 않는 STATUS 형식입니다."),
 
-
+    // [GET] /store
+    GET_INVALID_ORDER(false,2221,"지원하지 않는 ORDER 형식입니다."),
 
     /**
      * 3000 : Response 오류
