@@ -13,7 +13,7 @@ import java.util.List;
 public class StoreDao {
 
     private JdbcTemplate jdbcTemplate;
-
+    
     @Autowired
     public void setDataSource(DataSource dataSource) {
 
@@ -105,6 +105,29 @@ public class StoreDao {
                         rs.getString("status")
                 )
         ,foodIdx);
+    }
+
+    public Store getStore(int storeIdx){
+        String getStoreQuery = "SELECT foodIdx, name, storeImgUrl, storeInfoMsg, availableWay, storeStar, starNum, reviewNum," +
+                "deliveryTimeMsg, leastPriceMsg, deliveryTipMsg, status " +
+                "From Store " +
+                "Where storeIdx = ?";
+
+        return (Store) this.jdbcTemplate.queryForObject(getStoreQuery,
+                (rs, rowNum) -> new Store(
+                        rs.getInt("foodIdx"),
+                        rs.getString("name"),
+                        rs.getString("storeImgUrl"),
+                        rs.getString("storeInfoMsg"),
+                        rs.getString("availableWay"),
+                        rs.getFloat("storeStar"),
+                        rs.getInt("starNum"),
+                        rs.getInt("reviewNum"),
+                        rs.getString("deliveryTimeMsg"),
+                        rs.getInt("leastPriceMsg"),
+                        rs.getString("deliveryTipMsg"),
+                        rs.getString("status")
+                ),storeIdx);
     }
 
     // POST
