@@ -6,6 +6,7 @@ import com.umc.hugo.src.user.model.PostLoginRes;
 import com.umc.hugo.src.user.model.GetUserRes;
 import com.umc.hugo.src.user.model.PostLoginReq;
 import com.umc.hugo.util.AES128;
+import com.umc.hugo.util.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,14 @@ import static com.umc.hugo.config.BaseResponseStatus.*;
 public class UserProvider {
     // *********************** 동작에 있어 필요한 요소들을 불러옵니다. *************************
     private final UserDao userDao;
+    private final JwtService jwtService;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired //readme 참고
-    public UserProvider(UserDao userDao) {
+    public UserProvider(UserDao userDao, JwtService jwtService) {
         this.userDao = userDao;
-
+        this.jwtService = jwtService;
     }
     // ******************************************************************************
 
@@ -43,11 +45,8 @@ public class UserProvider {
 
         if (postLoginReq.getPassword().equals(password)) { //비말번호가 일치한다면 userIdx를 가져온다.
             int userIdx = userDao.getPwdByEmail(postLoginReq).getUserIdx();
-            return new PostLoginRes(userIdx);
-//  *********** 해당 부분은 7주차 - JWT 수업 후 주석해제 및 대체해주세요!  **************** //
-//            String jwt = jwtService.createJwt(userIdx);
-//            return new PostLoginRes(userIdx,jwt);
-//  **************************************************************************
+            String jwt = jwtService.createJwt(userIdx);
+            return new PostLoginRes(userIdx,jwt);
 
         } else { // 비밀번호가 다르다면 에러메세지를 출력한다.
             throw new BaseException(FAILED_TO_LOGIN);

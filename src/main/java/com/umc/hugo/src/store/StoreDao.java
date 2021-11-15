@@ -13,7 +13,7 @@ import java.util.List;
 public class StoreDao {
 
     private JdbcTemplate jdbcTemplate;
-    
+
     @Autowired
     public void setDataSource(DataSource dataSource) {
 
@@ -107,11 +107,11 @@ public class StoreDao {
         ,foodIdx);
     }
 
-    public Store getStore(int storeIdx){
+    public Store getStore(String storeName){
         String getStoreQuery = "SELECT foodIdx, name, storeImgUrl, storeInfoMsg, availableWay, storeStar, starNum, reviewNum," +
                 "deliveryTimeMsg, leastPriceMsg, deliveryTipMsg, status " +
                 "From Store " +
-                "Where storeIdx = ?";
+                "Where name = ?";
 
         return (Store) this.jdbcTemplate.queryForObject(getStoreQuery,
                 (rs, rowNum) -> new Store(
@@ -127,8 +127,15 @@ public class StoreDao {
                         rs.getInt("leastPriceMsg"),
                         rs.getString("deliveryTipMsg"),
                         rs.getString("status")
-                ),storeIdx);
+                ),storeName);
     }
+
+//    public StoreName checkStore(String storeName){
+//        return this.jdbcTemplate.queryForObject("SELECT name FROM Store",
+//                (rs, rowNum) -> new StoreName(
+//                        rs.getArray("name") // StoreName Class와 type을 맞추긴 했는데... null 값 에러 출력된다. name이 Array로 차례로 들어가지 못하는 것일까?
+//                ));
+//    }
 
     // POST
     public int addStore(PostStoreReq poststoreReq){

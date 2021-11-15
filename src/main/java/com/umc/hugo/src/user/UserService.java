@@ -4,6 +4,7 @@ import com.umc.hugo.config.BaseException;
 import com.umc.hugo.config.secret.Secret;
 import com.umc.hugo.src.user.model.*;
 import com.umc.hugo.util.AES128;
+import com.umc.hugo.util.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,14 @@ public class UserService {
     // *********************** 동작에 있어 필요한 요소들을 불러옵니다. *************************
     private final UserDao userDao;
     private final UserProvider userProvider;
+    private final JwtService jwtService;
 
 
     @Autowired //readme 참고
-    public UserService(UserDao userDao, UserProvider userProvider) {
+    public UserService(UserDao userDao, UserProvider userProvider, JwtService jwtService) {
         this.userDao = userDao;
         this.userProvider = userProvider;
-
+        this.jwtService = jwtService;
     }
     // ******************************************************************************
     // 회원가입(POST)
@@ -45,13 +47,10 @@ public class UserService {
         }
         try {
             int userIdx = userDao.createUser(postUserReq);
-            return new PostUserRes(userIdx);
+            //jwt 발급.
+            String jwt = jwtService.createJwt(userIdx);
+            return new PostUserRes(jwt,userIdx);
 
-//  *********** 해당 부분은 7주차 수업 후 주석해제하서 대체해서 사용해주세요! ***********
-//            //jwt 발급.
-//            String jwt = jwtService.createJwt(userIdx);
-//            return new PostUserRes(jwt,userIdx);
-//  *********************************************************************
         } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
             throw new BaseException(DATABASE_ERROR);
         }

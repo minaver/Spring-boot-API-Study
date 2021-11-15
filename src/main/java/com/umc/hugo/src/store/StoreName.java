@@ -1,13 +1,15 @@
-package com.umc.hugo.src.user.model;
+package com.umc.hugo.src.store;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class PostUserRes {
-    private String jwt;
-    private int userIdx;
+public class StoreName {
+    public StoreName(){}
+
+    private Object name;
 }

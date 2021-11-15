@@ -25,6 +25,10 @@ public class StoreService {
 
     //POST
     public PostStoreRes postStore(PostStoreReq postStoreReq){
+
+//        StoreName storeName = storeDao.checkStore(postStoreReq.getName());
+//        System.out.println(storeName);
+
         int storeIdx= storeDao.addStore(postStoreReq);
         PostStoreRes postStoreRes = new PostStoreRes(storeIdx);
         return postStoreRes;
