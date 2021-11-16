@@ -1,18 +1,20 @@
 package com.umc.hugo.util;
 
 import com.umc.hugo.config.BaseException;
+import com.umc.hugo.config.BaseResponseStatus;
 import com.umc.hugo.config.secret.Secret;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
-
+@Service
 public class JwtService {
     /*
     JWT 생성
@@ -48,7 +50,7 @@ public class JwtService {
         //1. JWT 추출
         String accessToken = getJwt();
         if(accessToken == null || accessToken.length() == 0){
-            throw new BaseException(EMPTY_JWT);
+            throw new BaseException(BaseResponseStatus.EMPTY_JWT);
         }
 
         // 2. JWT parsing
@@ -58,10 +60,32 @@ public class JwtService {
                     .setSigningKey(Secret.JWT_SECRET_KEY)
                     .parseClaimsJws(accessToken);
         } catch (Exception ignored) {
-            throw new BaseException(INVALID_JWT);
+            throw new BaseException(BaseResponseStatus.INVALID_JWT);
         }
 
         // 3. userIdx 추출
         return claims.getBody().get("userIdx",Integer.class);  // jwt 에서 userIdx를 추출합니다.
     }
+
+    public int getOwnerIdx() throws BaseException {
+        //1. JWT 추출
+        String accessToken = getJwt();
+        if(accessToken == null || accessToken.length() == 0){
+            throw new BaseException(BaseResponseStatus.EMPTY_JWT);
+        }
+
+        // 2. JWT parsing
+        Jws<Claims> claims;
+        try{
+            claims = Jwts.parser()
+                    .setSigningKey(Secret.JWT_SECRET_KEY)
+                    .parseClaimsJws(accessToken);
+        } catch (Exception ignored) {
+            throw new BaseException(BaseResponseStatus.INVALID_JWT);
+        }
+
+        // 3. userIdx 추출
+        return claims.getBody().get("ownerIdx",Integer.class);  // jwt 에서 userIdx를 추출합니다.
+    }
+
 }

@@ -139,10 +139,10 @@ public class StoreDao {
 
     // POST
     public int addStore(PostStoreReq poststoreReq){
-        String createUserQuery = "insert into Baemin.Store (foodIdx,name,storeImgUrl,storeInfoMsg,availableWay, " +
+        String createUserQuery = "insert into Baemin.Store (foodIdx,ownerIdx,name,storeImgUrl,storeInfoMsg,availableWay, " +
                 "storeStar,starNum,reviewNum,deliveryTimeMsg,leastPriceMsg,deliveryTipMsg) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         Object[] createUserParams = new Object[]{
-                poststoreReq.getFoodIdx(), poststoreReq.getName(),poststoreReq.getStoreImgUrl(),poststoreReq.getStoreInfoMsg(),poststoreReq.getAvailableWay(),
+                poststoreReq.getFoodIdx(),poststoreReq.getOwnerIdx(), poststoreReq.getName(),poststoreReq.getStoreImgUrl(),poststoreReq.getStoreInfoMsg(),poststoreReq.getAvailableWay(),
                 poststoreReq.getStoreStar(),poststoreReq.getStarNum(),poststoreReq.getReviewNum(),poststoreReq.getDeliveryTimeMsg(),
                 poststoreReq.getLeastPriceMsg(),poststoreReq.getDeliveryTipMsg()
         };

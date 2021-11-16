@@ -3,6 +3,7 @@ package com.umc.hugo.src.user;
 import com.umc.hugo.config.BaseException;
 import com.umc.hugo.config.BaseResponse;
 import com.umc.hugo.src.user.model.*;
+import com.umc.hugo.util.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.umc.hugo.config.BaseResponseStatus.POST_USERS_EMPTY_EMAIL;
-import static com.umc.hugo.config.BaseResponseStatus.POST_USERS_INVALID_EMAIL;
+import static com.umc.hugo.config.BaseResponseStatus.*;
 import static com.umc.hugo.util.ValidationRegex.isRegexEmail;
 
 @RestController // Rest API 또는 WebAPI를 개발하기 위한 어노테이션. @Controller + @ResponseBody 를 합친것.
@@ -41,10 +41,13 @@ public class UserController {
     private final UserProvider userProvider;
     @Autowired
     private final UserService userService;
+    @Autowired
+    private final JwtService jwtService;
 
-    public UserController(UserProvider userProvider, UserService userService) {
+    public UserController(UserProvider userProvider, UserService userService, JwtService jwtService) {
         this.userProvider = userProvider;
         this.userService = userService;
+        this.jwtService = jwtService;
     }
     // ******************************************************************************
 
@@ -74,9 +77,9 @@ public class UserController {
         }
     }
 
-    /**
+     /**
      * 로그인 API
-     * [POST] /users/logIn
+     * [POST] /users/log-in
      */
     @ResponseBody
     @PostMapping("/log-in")

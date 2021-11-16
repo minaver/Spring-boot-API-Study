@@ -5,6 +5,7 @@ import com.umc.hugo.config.BaseResponse;
 import com.umc.hugo.config.StoreResponse;
 import com.umc.hugo.src.food.Food;
 import com.umc.hugo.src.store.model.*;
+import com.umc.hugo.util.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +21,13 @@ public class StoreController {
 
     private StoreProvider storeProvider;
     private StoreService storeService;
+    private JwtService jwtService;
 
     @Autowired
-    public StoreController(StoreProvider storeProvider,StoreService storeService){
+    public StoreController(StoreProvider storeProvider,StoreService storeService,JwtService jwtService){
         this.storeProvider = storeProvider;
         this.storeService = storeService;
+        this.jwtService = jwtService;
     }
 
     // 모든 식당 출력하는 GET
@@ -49,7 +52,15 @@ public class StoreController {
 
     @ResponseBody
     @PostMapping("/add")
-    public BaseResponse<PostStoreRes> postStore(@RequestBody PostStoreReq postStoreReq){
+    public BaseResponse<PostStoreRes> postStore(@RequestBody PostStoreReq postStoreReq) throws BaseException {
+
+        // jwt로 valid한 owner가 접근하는지 확인
+        // jwt에서 owneridx 추출.
+        int ownerIdxByJwt = jwtService.getOwnerIdx();
+        //userIdx와 접근한 유저가 같은지 확인
+        if(postStoreReq.getOwnerIdx() != ownerIdxByJwt){
+            return new BaseResponse<>(INVALID_USER_JWT);
+        }
 
         if (postStoreReq.getStoreImgUrl() == null) {
             return new BaseResponse<>(POST_EMPTY_URL);
