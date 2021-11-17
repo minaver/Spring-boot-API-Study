@@ -21,7 +21,7 @@ public class OwnerDao {
 
 
     // 회원가입
-    public int createOwner(PostUserReq postUserReq) {
+    public int createOwner(PostOwnerReq postOwnerReq) {
         String createOwnerQuery = "insert into Owner (name, email, password, profileImgUrl) VALUES (?,?,?)"; // 실행될 동적 쿼리문
         Object[] createOwnerParams = new Object[]{postOwnerReq.getName(), postOwnerReq.getEmail(), postOwnerReq.getPassword(), postOwnerReq.getProfileImgUrl()}; // 동적 쿼리의 ?부분에 주입될 값
         this.jdbcTemplate.update(createOwnerQuery, createOwnerParams);

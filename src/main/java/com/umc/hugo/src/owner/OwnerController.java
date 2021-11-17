@@ -2,9 +2,7 @@ package com.umc.hugo.src.owner;
 
 import com.umc.hugo.config.BaseException;
 import com.umc.hugo.config.BaseResponse;
-import com.umc.hugo.src.user.User;
-import com.umc.hugo.src.user.UserPassword;
-import com.umc.hugo.src.user.model.*;
+import com.umc.hugo.src.owner.model.*;
 import com.umc.hugo.util.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,20 +53,20 @@ public class OwnerController {
     // Body
     @ResponseBody
     @PostMapping("/sign-up")    // POST 방식의 요청을 매핑하기 위한 어노테이션
-    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
+    public BaseResponse<PostOwnerRes> createOwner(@RequestBody PostOwnerReq postOwnerReq) {
         //  @RequestBody란, 클라이언트가 전송하는 HTTP Request Body(우리는 JSON으로 통신하니, 이 경우 body는 JSON)를 자바 객체로 매핑시켜주는 어노테이션
         // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
         // email에 값이 존재하는지, 빈 값으로 요청하지는 않았는지 검사합니다. 빈값으로 요청했다면 에러 메시지를 보냅니다.
-        if (postUserReq.getEmail() == null) {
+        if (postOwnerReq.getEmail() == null) {
             return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
         }
         //이메일 정규표현: 입력받은 이메일이 email@domain.xxx와 같은 형식인지 검사합니다. 형식이 올바르지 않다면 에러 메시지를 보냅니다.
-        if (!isRegexEmail(postUserReq.getEmail())) {
+        if (!isRegexEmail(postOwnerReq.getEmail())) {
             return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
         }
         try {
-            PostUserRes postUserRes = userService.createUser(postUserReq);
-            return new BaseResponse<>(postUserRes);
+            PostOwnerRes postOwnerRes = ownerService.createOwner(postOwnerReq);
+            return new BaseResponse<>(postOwnerRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -106,18 +104,18 @@ public class OwnerController {
     //  JSON은 HTTP 통신 시, 데이터를 주고받을 때 많이 쓰이는 데이터 포맷.
     @GetMapping("") // (GET) 127.0.0.1:9000/app/users
     // GET 방식의 요청을 매핑하기 위한 어노테이션
-    public BaseResponse<List<GetUserRes>> getUsers(@RequestParam(required = false) String name) {
+    public BaseResponse<List<GetOwnerRes>> getOwners(@RequestParam(required = false) String name) {
         //  @RequestParam은, 1개의 HTTP Request 파라미터를 받을 수 있는 어노테이션(?뒤의 값). default로 RequestParam은 반드시 값이 존재해야 하도록 설정되어 있지만, (전송 안되면 400 Error 유발)
         //  지금 예시와 같이 required 설정으로 필수 값에서 제외 시킬 수 있음
         //  defaultValue를 통해, 기본값(파라미터가 없는 경우, 해당 파라미터의 기본값 설정)을 지정할 수 있음
         try {
             if (name == null) { // query string인 nickname이 없을 경우, 그냥 전체 유저정보를 불러온다.
-                List<GetUserRes> getUsersRes = ownerProvider.getUsers();
-                return new BaseResponse<>(getUsersRes);
+                List<GetOwnerRes> getOwnerRes = ownerProvider.getOwners();
+                return new BaseResponse<>(getOwnerRes);
             }
             // query string인 nickname이 있을 경우, 조건을 만족하는 유저정보들을 불러온다.
-            List<GetUserRes> getUsersRes = ownerProvider.getUsersByNickname(name);
-            return new BaseResponse<>(getUsersRes);
+            List<GetOwnerRes> getOwnerRes = ownerProvider.getOwnersByNickname(name);
+            return new BaseResponse<>(getOwnerRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -129,15 +127,15 @@ public class OwnerController {
      */
     // Path-variable
     @ResponseBody
-    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/app/users/:userIdx
-    public BaseResponse<GetUserRes> getUser(@PathVariable("userIdx") int userIdx) {
+    @GetMapping("/{ownerIdx}") // (GET) 127.0.0.1:9000/app/users/:userIdx
+    public BaseResponse<GetOwnerRes> getOwner(@PathVariable("ownerIdx") int ownerIdx) {
         // @PathVariable RESTful(URL)에서 명시된 파라미터({})를 받는 어노테이션, 이 경우 userId값을 받아옴.
         //  null값 or 공백값이 들어가는 경우는 적용하지 말 것
         //  .(dot)이 포함된 경우, .을 포함한 그 뒤가 잘려서 들어감
         // Get Users
         try {
-            GetUserRes getUserRes = ownerProvider.getUser(userIdx);
-            return new BaseResponse<>(getUserRes);
+            GetOwnerRes getOwnerRes = ownerProvider.getOwner(ownerIdx);
+            return new BaseResponse<>(getOwnerRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -150,19 +148,19 @@ public class OwnerController {
      */
     // 1. 유저 이름 변경
     @ResponseBody
-    @PatchMapping("/name/{userIdx}")
-    public BaseResponse<String> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody User user) {
+    @PatchMapping("/name/{ownerIdx}")
+    public BaseResponse<String> modifyOwnerName(@PathVariable("ownerIdx") int ownerIdx, @RequestBody Owner owner) {
         try {
             //jwt에서 idx 추출.
-            int userIdxByJwt = jwtService.getUserIdx();
+            int ownerIdxByJwt = jwtService.getOwnerIdx();
             //userIdx와 접근한 유저가 같은지 확인
-            if(userIdx != userIdxByJwt){
+            if(ownerIdx != ownerIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
 
             //같다면 유저네임 변경
-            PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getName());
-            ownerService.modifyUserName(patchUserReq);
+            PatchOwnerReq patchOwnerReq = new PatchOwnerReq(ownerIdx, owner.getName());
+            ownerService.modifyOwnerName(patchOwnerReq);
 
             String result = "회원이름이 수정되었습니다.";
             return new BaseResponse<>(result);
@@ -174,11 +172,11 @@ public class OwnerController {
     // 2. 유저 비밀번호 변경
     // 비밀번호 변경시 현재 비밀번호로 권한 체크 후 변경 가능하도록
     @ResponseBody
-    @PatchMapping("/pw/{userIdx}")
-    public BaseResponse<String> modifyUserPassword(@PathVariable("userIdx") int userIdx, @RequestBody UserPassword userPassword) {
+    @PatchMapping("/pw/{ownerIdx}")
+    public BaseResponse<String> modifyOwnerPassword(@PathVariable("ownerIdx") int ownerIdx, @RequestBody OwnerPassword ownerPassword) {
         try {
-            PatchUserPasswordReq patchUserPasswordReq = new PatchUserPasswordReq(userIdx, userPassword.getNowPassword(), userPassword.getNewPassword());
-            ownerService.modifyOwnerPassword(patchUserPasswordReq);
+            PatchOwnerPasswordReq patchOwnerPasswordReq = new PatchOwnerPasswordReq(ownerIdx, ownerPassword.getNowPassword(), ownerPassword.getNewPassword());
+            ownerService.modifyOwnerPassword(patchOwnerPasswordReq);
 
             String result = "회원 비밀번호가 수정되었습니다.";
             return new BaseResponse<>(result);
@@ -190,11 +188,11 @@ public class OwnerController {
     // 3. 유저 상태 변경
     // DELETE를 쓰지 않는 대신 PATCH로 유저 상태를 변경하여 비활성(deactivate), 탈퇴(out) 회원을 관리한다.
     @ResponseBody
-    @PatchMapping("/status/{userIdx}")
-    public BaseResponse<String> modifyUserStatus(@PathVariable("userIdx") int userIdx, @RequestBody User user) {
+    @PatchMapping("/status/{ownerIdx}")
+    public BaseResponse<String> modifyOwnerStatus(@PathVariable("ownerIdx") int ownerIdx, @RequestBody Owner owner) {
         try {
-            PatchUserStatusReq patchUserStatusReq = new PatchUserStatusReq(userIdx, user.getStatus());
-            ownerService.modifyUserStatus(patchUserStatusReq);
+            PatchOwnerStatusReq patchOwnerStatusReq = new PatchOwnerStatusReq(ownerIdx, owner.getStatus());
+            ownerService.modifyOwnerStatus(patchOwnerStatusReq);
 
             String result = "회원상태가 수정되었습니다.";
             return new BaseResponse<>(result);
