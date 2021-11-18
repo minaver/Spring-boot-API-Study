@@ -4,6 +4,7 @@ import com.umc.hugo.config.BaseException;
 import com.umc.hugo.config.BaseResponse;
 import com.umc.hugo.src.owner.model.*;
 import com.umc.hugo.util.JwtService;
+import com.umc.hugo.util.JwtServiceOwner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,14 @@ public class OwnerController {
     private final OwnerService ownerService;
     @Autowired
     private final JwtService jwtService;
+    @Autowired
+    private final JwtServiceOwner jwtServiceOwner;
 
-    public OwnerController(OwnerProvider ownerProvider, OwnerService ownerService, JwtService jwtService) {
+    public OwnerController(OwnerProvider ownerProvider, OwnerService ownerService, JwtService jwtService, JwtServiceOwner jwtServiceOwner) {
         this.ownerProvider = ownerProvider;
         this.ownerService = ownerService;
         this.jwtService = jwtService;
+        this.jwtServiceOwner = jwtServiceOwner;
     }
     // ******************************************************************************
 
@@ -152,7 +156,7 @@ public class OwnerController {
     public BaseResponse<String> modifyOwnerName(@PathVariable("ownerIdx") int ownerIdx, @RequestBody Owner owner) {
         try {
             //jwt에서 idx 추출.
-            int ownerIdxByJwt = jwtService.getOwnerIdx();
+            int ownerIdxByJwt = jwtServiceOwner.getOwnerIdx();
             //userIdx와 접근한 유저가 같은지 확인
             if(ownerIdx != ownerIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);

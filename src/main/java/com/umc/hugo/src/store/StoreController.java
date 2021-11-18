@@ -6,6 +6,7 @@ import com.umc.hugo.config.StoreResponse;
 import com.umc.hugo.src.food.Food;
 import com.umc.hugo.src.store.model.*;
 import com.umc.hugo.util.JwtService;
+import com.umc.hugo.util.JwtServiceOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +22,17 @@ public class StoreController {
 
     private StoreProvider storeProvider;
     private StoreService storeService;
+    private StoreDao storeDao;
     private JwtService jwtService;
+    private JwtServiceOwner jwtServiceOwner;
 
     @Autowired
-    public StoreController(StoreProvider storeProvider,StoreService storeService,JwtService jwtService){
+    public StoreController(StoreProvider storeProvider,StoreService storeService,StoreDao storeDao,JwtService jwtService,JwtServiceOwner jwtServiceOwner){
         this.storeProvider = storeProvider;
         this.storeService = storeService;
+        this.storeDao = storeDao;
         this.jwtService = jwtService;
+        this.jwtServiceOwner = jwtServiceOwner;
     }
 
     // 모든 식당 출력하는 GET
@@ -53,14 +58,6 @@ public class StoreController {
     @ResponseBody
     @PostMapping("/add")
     public BaseResponse<PostStoreRes> postStore(@RequestBody PostStoreReq postStoreReq) throws BaseException {
-
-        // jwt로 valid한 owner가 접근하는지 확인
-        // jwt에서 owneridx 추출.
-        int ownerIdxByJwt = jwtService.getOwnerIdx();
-        //userIdx와 접근한 유저가 같은지 확인
-        if(postStoreReq.getOwnerIdx() != ownerIdxByJwt){
-            return new BaseResponse<>(INVALID_USER_JWT);
-        }
 
         if (postStoreReq.getStoreImgUrl() == null) {
             return new BaseResponse<>(POST_EMPTY_URL);
@@ -88,10 +85,23 @@ public class StoreController {
     @PatchMapping("name/{storeIdx}")
     public BaseResponse<String> modifyStoreName(@PathVariable("storeIdx") int storeIdx, @RequestBody Store store){
         try {
+            // jwt로 valid한 owner가 접근하는지 확인
+            // jwt에서 owneridx 추출.
+
+            // 수정하고자 하는 Store의 ownerIdx 값을 가져온다.
+            Store targetStore = storeDao.getStoreBystoreIdx(storeIdx);
+            int ownerIdx = targetStore.getOwnerIdx();
+
+            int ownerIdxByJwt = jwtServiceOwner.getOwnerIdx();
+            //ownerIdx와 접근한 owner가 같은지 확인
+            if( ownerIdx != ownerIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
             PatchStoreReq patchStoreReq = new PatchStoreReq(storeIdx, store.getName());
             storeService.modifyStore(patchStoreReq);
 
-            String result = "음식이름이 수정되었습니다.";
+            String result = "식당이름이 수정되었습니다.";
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
@@ -123,10 +133,24 @@ public class StoreController {
         //**
 
         try {
+
+            // jwt로 valid한 owner가 접근하는지 확인
+            // jwt에서 owneridx 추출.
+
+            // 수정하고자 하는 Store의 ownerIdx 값을 가져온다.
+            Store targetStore = storeDao.getStoreBystoreIdx(storeIdx);
+            int ownerIdx = targetStore.getOwnerIdx();
+
+            int ownerIdxByJwt = jwtServiceOwner.getOwnerIdx();
+            //ownerIdx와 접근한 owner가 같은지 확인
+            if( ownerIdx != ownerIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
             PatchStoreImgUrlReq patchStoreImgUrlReq = new PatchStoreImgUrlReq(storeIdx, store.getStoreImgUrl());
             storeService.modifyStoreImgUrl(patchStoreImgUrlReq);
 
-            String result = "음식 이미지가 수정되었습니다.";
+            String result = "식당 이미지가 수정되었습니다.";
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
@@ -140,6 +164,20 @@ public class StoreController {
     public BaseResponse<String> modifyStoreStatus(@PathVariable("storeIdx") int storeIdx, @RequestBody Store store)  {
 
         try {
+
+            // jwt로 valid한 owner가 접근하는지 확인
+            // jwt에서 owneridx 추출.
+
+            // 수정하고자 하는 Store의 ownerIdx 값을 가져온다.
+            Store targetStore = storeDao.getStoreBystoreIdx(storeIdx);
+            int ownerIdx = targetStore.getOwnerIdx();
+
+            int ownerIdxByJwt = jwtServiceOwner.getOwnerIdx();
+            //ownerIdx와 접근한 owner가 같은지 확인
+            if( ownerIdx != ownerIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
             PatchStoreStatusReq patchStoreStatusReq = new PatchStoreStatusReq(storeIdx, store.getStatus());
             storeService.modifyStoreStatus(patchStoreStatusReq);
 

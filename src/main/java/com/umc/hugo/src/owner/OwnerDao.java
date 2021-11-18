@@ -3,10 +3,11 @@ package com.umc.hugo.src.owner;
 import com.umc.hugo.src.owner.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
-
+@Repository
 public class OwnerDao {
 
     // *********************** 동작에 있어 필요한 요소들을 불러옵니다. *************************

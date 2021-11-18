@@ -6,7 +6,7 @@ import com.umc.hugo.src.owner.model.GetOwnerRes;
 import com.umc.hugo.src.owner.model.PostLoginReq;
 import com.umc.hugo.src.owner.model.PostLoginRes;
 import com.umc.hugo.util.AES128;
-import com.umc.hugo.util.JwtService;
+import com.umc.hugo.util.JwtServiceOwner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +20,14 @@ import static com.umc.hugo.config.BaseResponseStatus.*;
 public class OwnerProvider {
     // *********************** 동작에 있어 필요한 요소들을 불러옵니다. *************************
     private final OwnerDao ownerDao;
-    private final JwtService jwtService;
+    private final JwtServiceOwner jwtServiceOwner;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired //readme 참고
-    public OwnerProvider(OwnerDao ownerDao, JwtService jwtService) {
+    public OwnerProvider(OwnerDao ownerDao, JwtServiceOwner jwtServiceOwner) {
         this.ownerDao = ownerDao;
-        this.jwtService = jwtService;
+        this.jwtServiceOwner = jwtServiceOwner;
     }
     // ******************************************************************************
 
@@ -44,9 +44,9 @@ public class OwnerProvider {
         }
 
         if (postLoginReq.getPassword().equals(password)) { //비말번호가 일치한다면 userIdx를 가져온다.
-            int userIdx = ownerDao.getPwdByEmail(postLoginReq).getOwnerIdx();
-            String jwt = jwtService.createJwt(userIdx);
-            return new PostLoginRes(userIdx,jwt);
+            int ownerIdx = ownerDao.getPwdByEmail(postLoginReq).getOwnerIdx();
+            String jwt = jwtServiceOwner.createJwt(ownerIdx);
+            return new PostLoginRes(ownerIdx,jwt);
 
         } else { // 비밀번호가 다르다면 에러메세지를 출력한다.
             throw new BaseException(FAILED_TO_LOGIN);

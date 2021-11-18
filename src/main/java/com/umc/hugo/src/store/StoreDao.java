@@ -108,7 +108,7 @@ public class StoreDao {
     }
 
     public Store getStore(String storeName){
-        String getStoreQuery = "SELECT foodIdx, name, storeImgUrl, storeInfoMsg, availableWay, storeStar, starNum, reviewNum," +
+        String getStoreQuery = "SELECT foodIdx, name, ownerIdx, storeImgUrl, storeInfoMsg, availableWay, storeStar, starNum, reviewNum," +
                 "deliveryTimeMsg, leastPriceMsg, deliveryTipMsg, status " +
                 "From Store " +
                 "Where name = ?";
@@ -117,6 +117,7 @@ public class StoreDao {
                 (rs, rowNum) -> new Store(
                         rs.getInt("foodIdx"),
                         rs.getString("name"),
+                        rs.getInt("ownerIdx"),
                         rs.getString("storeImgUrl"),
                         rs.getString("storeInfoMsg"),
                         rs.getString("availableWay"),
@@ -128,6 +129,30 @@ public class StoreDao {
                         rs.getString("deliveryTipMsg"),
                         rs.getString("status")
                 ),storeName);
+    }
+
+    public Store getStoreBystoreIdx(int storeIdx){
+        String getStoreQuery = "SELECT foodIdx, name, ownerIdx, storeImgUrl, storeInfoMsg, availableWay, storeStar, starNum, reviewNum," +
+                "deliveryTimeMsg, leastPriceMsg, deliveryTipMsg, status " +
+                "From Store " +
+                "Where storeIdx = ?";
+
+        return (Store) this.jdbcTemplate.queryForObject(getStoreQuery,
+                (rs, rowNum) -> new Store(
+                        rs.getInt("foodIdx"),
+                        rs.getString("name"),
+                        rs.getInt("ownerIdx"),
+                        rs.getString("storeImgUrl"),
+                        rs.getString("storeInfoMsg"),
+                        rs.getString("availableWay"),
+                        rs.getFloat("storeStar"),
+                        rs.getInt("starNum"),
+                        rs.getInt("reviewNum"),
+                        rs.getString("deliveryTimeMsg"),
+                        rs.getInt("leastPriceMsg"),
+                        rs.getString("deliveryTipMsg"),
+                        rs.getString("status")
+                ),storeIdx);
     }
 
 //    public StoreName checkStore(String storeName){

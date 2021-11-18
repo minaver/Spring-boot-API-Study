@@ -19,6 +19,7 @@ public class Store {
 
     private int foodIdx;
     private String name;
+    private int ownerIdx;
     private String storeImgUrl;
     private String storeInfoMsg;
     private String availableWay;

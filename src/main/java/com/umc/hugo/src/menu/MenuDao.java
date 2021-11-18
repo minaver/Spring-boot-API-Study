@@ -54,7 +54,7 @@ public class MenuDao {
 
     // Get Store Info
     public Store getStore(int storeIdx){
-        String getStoreQuery = "SELECT S.foodIdx, S.name, S.storeImgUrl , S.storeInfoMsg, S.availableWay, S.storeStar, " +
+        String getStoreQuery = "SELECT S.foodIdx, S.name, S.ownerIdx S.storeImgUrl , S.storeInfoMsg, S.availableWay, S.storeStar, " +
                                     "S.starNum, S.reviewNum, " +
                                     "S.deliveryTimeMsg, S.leastPriceMsg, " +
                                     "substr(S.deliveryTipMsg,1,instr(S.deliveryTipMsg,'~')) deliveryTipMsg, S.status " +
@@ -65,6 +65,7 @@ public class MenuDao {
                 (rs, rowNum) -> new Store(
                         rs.getInt("foodIdx"),
                         rs.getString("name"),
+                        rs.getInt("ownerIdx"),
                         rs.getString("storeImgUrl"),
                         rs.getString("storeInfoMsg"),
                         rs.getString("availableWay"),
