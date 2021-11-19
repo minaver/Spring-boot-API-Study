@@ -22,19 +22,22 @@ public class MenuDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<GetMenuRes> menuRes(int store){
+    public List<GetMenuRes> menuRes(int store, int page, int pageSize){
+
+        int startPage = (page-1)*pageSize;
 
         return this.jdbcTemplate.query("SELECT M.name, M.menuImgUrl, ifnull(M.menuInfoMsg,0) as menuInfoMsg, M.menuPrice " +
                         "FROM Store S " +
                         "LEFT JOIN Menu M " +
                         "on S.storeIdx = M.storeIdx " +
-                        "WHERE S.storeIdx = ?",
+                        "WHERE S.storeIdx = ? " +
+                        "LIMIT ?,?",
                 (rs, rowNum) -> new GetMenuRes(
                         rs.getString("name"),
                         rs.getString("menuImgUrl"),
                         rs.getString("menuInfoMsg"),
                         rs.getInt("menuPrice"))
-                , store);
+                , store,startPage,pageSize);
     }
 
     // Get Food Info
@@ -54,7 +57,7 @@ public class MenuDao {
 
     // Get Store Info
     public Store getStore(int storeIdx){
-        String getStoreQuery = "SELECT S.foodIdx, S.name, S.ownerIdx S.storeImgUrl , S.storeInfoMsg, S.availableWay, S.storeStar, " +
+        String getStoreQuery = "SELECT S.foodIdx, S.name, S.ownerIdx, S.storeImgUrl , S.storeInfoMsg, S.availableWay, S.storeStar, " +
                                     "S.starNum, S.reviewNum, " +
                                     "S.deliveryTimeMsg, S.leastPriceMsg, " +
                                     "substr(S.deliveryTipMsg,1,instr(S.deliveryTipMsg,'~')) deliveryTipMsg, S.status " +
@@ -79,6 +82,16 @@ public class MenuDao {
                 )
         ,storeIdx);
     }
+
+    public MenuNum getMenuNum(int storeIdx){
+        String getMenuNumQuery = "SELECT count(*) as menuNum From Menu WHERE storeIdx = ?";
+
+        return (MenuNum) this.jdbcTemplate.queryForObject(getMenuNumQuery,
+                (rs,rowNum) -> new MenuNum(
+                        rs.getInt("menuNum")
+                ),storeIdx);
+    }
+
 
     public int addMenu(PostMenuReq postmenuReq){
         String createUserQuery = "insert into Baemin.Menu (storeIdx,name,menuImgUrl,menuInfoMsg,menuPrice) " +

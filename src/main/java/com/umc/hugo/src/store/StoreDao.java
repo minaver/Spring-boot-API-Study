@@ -21,7 +21,9 @@ public class StoreDao {
     }
 
     // GET
-    public List<GetStoreRes> storeResByStar(int foodIdx){
+    public List<GetStoreRes> storeResByStar(int foodIdx, int page,int pageSize){
+
+        int startPage = (page-1)*pageSize;
 
         return this.jdbcTemplate.query("SELECT S.storeImgUrl , S.name, S.availableWay, S.storeStar," +
                         "S.starNum, ifnull(shortMenu.shortMenuMsg,0) as shortMenuMsg, " +
@@ -32,7 +34,8 @@ public class StoreDao {
                         "            GROUP BY storeIdx) shortMenu " +
                         "ON S.storeIdx = shortMenu.storeIdx " +
                         "WHERE foodIdx = ? " +
-                        "ORDER BY S.storeStar desc",
+                        "ORDER BY S.storeStar desc " +
+                        "LIMIT ?,?",
                 (rs, rowNum) -> new GetStoreRes(
                         rs.getString("storeImgUrl"),
                         rs.getString("name"),
@@ -43,9 +46,11 @@ public class StoreDao {
                         rs.getString("leastPriceMsg"),
                         rs.getString("deliveryTipMsg"),
                         rs.getString("deliveryTimeMsg"))
-        , foodIdx);
+        , foodIdx,startPage,pageSize);
     }
-    public List<GetStoreRes> storeResByReview(int foodIdx){
+    public List<GetStoreRes> storeResByReview(int foodIdx, int page,int pageSize){
+
+        int startPage = (page-1)*pageSize;
 
         return this.jdbcTemplate.query("SELECT S.storeImgUrl , S.name, S.availableWay, S.storeStar," +
                         "S.starNum, ifnull(shortMenu.shortMenuMsg,0) as shortMenuMsg, " +
@@ -56,7 +61,8 @@ public class StoreDao {
                         "            GROUP BY storeIdx) shortMenu " +
                         "ON S.storeIdx = shortMenu.storeIdx " +
                         "WHERE foodIdx = ? " +
-                        "ORDER BY S.reviewNum desc",
+                        "ORDER BY S.reviewNum desc " +
+                        "LIMIT ?,?",
                 (rs, rowNum) -> new GetStoreRes(
                         rs.getString("storeImgUrl"),
                         rs.getString("name"),
@@ -67,9 +73,11 @@ public class StoreDao {
                         rs.getString("leastPriceMsg"),
                         rs.getString("deliveryTipMsg"),
                         rs.getString("deliveryTimeMsg"))
-        , foodIdx);
+        , foodIdx,startPage,pageSize);
     }
-    public List<GetStoreRes> storeResByIdx(int foodIdx){
+    public List<GetStoreRes> storeResByIdx(int foodIdx, int page,int pageSize){
+
+        int startPage = (page-1)*pageSize;
 
         return this.jdbcTemplate.query("SELECT S.storeImgUrl , S.name, S.availableWay, S.storeStar," +
                         "S.starNum, ifnull(shortMenu.shortMenuMsg,0) as shortMenuMsg, " +
@@ -80,7 +88,8 @@ public class StoreDao {
                         "            GROUP BY storeIdx) shortMenu " +
                         "ON S.storeIdx = shortMenu.storeIdx " +
                         "WHERE foodIdx = ? " +
-                        "ORDER BY S.storeIdx ",
+                        "ORDER BY S.storeIdx " +
+                        "LIMIT ?,?",
                 (rs, rowNum) -> new GetStoreRes(
                         rs.getString("storeImgUrl"),
                         rs.getString("name"),
@@ -91,7 +100,7 @@ public class StoreDao {
                         rs.getString("leastPriceMsg"),
                         rs.getString("deliveryTipMsg"),
                         rs.getString("deliveryTimeMsg"))
-        , foodIdx);
+        , foodIdx,startPage,pageSize);
     }
 
     // INNER FUNCTION
@@ -153,6 +162,15 @@ public class StoreDao {
                         rs.getString("deliveryTipMsg"),
                         rs.getString("status")
                 ),storeIdx);
+    }
+
+    public StoreNum getStoreNum(int foodIdx){
+        String getStoreNumQuery = "SELECT count(*) as storeNum FROM Store Where foodIdx = ?";
+
+        return (StoreNum) this.jdbcTemplate.queryForObject(getStoreNumQuery,
+                (rs,rowNum) -> new StoreNum(
+                        rs.getInt("storeNum")
+                ),foodIdx);
     }
 
 //    public StoreName checkStore(String storeName){

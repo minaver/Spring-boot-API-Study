@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.umc.hugo.config.BaseResponseStatus.POST_EMPTY_URL;
-import static com.umc.hugo.config.BaseResponseStatus.POST_INVALID_URL;
+import static com.umc.hugo.config.BaseResponseStatus.*;
 import static com.umc.hugo.util.ValidationRegex.isUrl;
 
 @RestController
@@ -30,18 +29,27 @@ public class MenuController {
     }
 
     @GetMapping("/{store}")
-    public MenuResponse<List<GetMenuRes>,String> getMenu(@PathVariable("store") int storeIdx ){
-        List<GetMenuRes> menuRes = menuProvider.getMenu(storeIdx);
+    public MenuResponse<List<GetMenuRes>,String> getMenu(@PathVariable("store") int storeIdx,
+                                                         @RequestParam int page, @RequestParam int pageSize ){
+        try {
+            // 입력된 page가 1 이상인지 pageSize가 1이상인지 확인 Validation
+            if (page < 1 || pageSize < 1)
+                return new MenuResponse<>(GET_INVALID_PAGE);
 
-        // For Get Food Name
-        Food food = menuProvider.getFood(storeIdx);
-        String foodName = food.getName();
+            List<GetMenuRes> menuRes = menuProvider.getMenu(storeIdx, page, pageSize);
 
-        // For Get Store Name
-        Store store = menuProvider.getStore(storeIdx);
-        String storeName = store.getName();
+            // For Get Food Name
+            Food food = menuProvider.getFood(storeIdx);
+            String foodName = food.getName();
 
-        return new MenuResponse<>(menuRes,foodName,storeName);
+            // For Get Store Name
+            Store store = menuProvider.getStore(storeIdx);
+            String storeName = store.getName();
+
+            return new MenuResponse<>(menuRes, foodName, storeName);
+        } catch (BaseException exception) {
+            return new MenuResponse<>((exception.getStatus()));
+        }
     }
 
     @ResponseBody

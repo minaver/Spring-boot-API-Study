@@ -47,6 +47,8 @@ public enum BaseResponseStatus {
 
     // [GET] /store
     GET_INVALID_ORDER(false,2221,"지원하지 않는 ORDER 형식입니다."),
+    GET_INVALID_PAGE(false,2222,"PAGE 정보가 잘못되었습니다."),
+    GET_OUTBOUND_PAGE(false,2223,"PAGE 범위를 벗어났습니다."),
 
     /**
      * 3000 : Response 오류

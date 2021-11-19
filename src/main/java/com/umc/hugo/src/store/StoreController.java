@@ -39,20 +39,28 @@ public class StoreController {
     // 출력 방법은 idx, star, review 로 가능하다.
     // + 총 가게 수 몇개인지 출력하는문 함께 추가
     @GetMapping("/{foodIdx}")
-    public StoreResponse<List<GetStoreRes>,String> getStore(@PathVariable("foodIdx") int foodIdx, @RequestParam(required = false) String order){
-        // if order parameter is null allocate default value(idx)
-        if(order == null)
-            order = "idx";
-        // order 변수가 idx, star, review 중에 있는지 확인 Validation
-        if(!order.equals("idx") && !order.equals("star") && !order.equals("review")){
-            return new StoreResponse<>(GET_INVALID_ORDER);
+    public StoreResponse<List<GetStoreRes>,String> getStore(@PathVariable("foodIdx") int foodIdx, @RequestParam(required = false) String order,
+                                                            @RequestParam int page, @RequestParam int pageSize){
+        try {
+            // if order parameter is null allocate default value(idx)
+            if (order == null)
+                order = "idx";
+            // order 변수가 idx, star, review 중에 있는지 확인 Validation
+            if (!order.equals("idx") && !order.equals("star") && !order.equals("review")) {
+                return new StoreResponse<>(GET_INVALID_ORDER);
+            }
+            // 입력된 page가 1 이상인지 pageSize가 1이상인지 확인 Validation
+            if (page < 1 || pageSize < 1)
+                return new StoreResponse<>(GET_INVALID_PAGE);
+
+            List<GetStoreRes> storeRes = storeProvider.getStore(foodIdx, order, page, pageSize);
+            Food food = storeProvider.getFood(foodIdx);
+            String foodName = food.getName();
+
+            return new StoreResponse<>(storeRes, foodName);
+        } catch (BaseException exception) {
+            return new StoreResponse<>((exception.getStatus()));
         }
-
-        List<GetStoreRes> storeRes = storeProvider.getStore(foodIdx,order);
-        Food food = storeProvider.getFood(foodIdx);
-        String foodName = food.getName();
-
-        return new StoreResponse<>(storeRes,foodName);
     }
 
     @ResponseBody
