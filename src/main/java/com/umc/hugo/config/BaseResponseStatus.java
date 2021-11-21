@@ -49,6 +49,7 @@ public enum BaseResponseStatus {
     GET_INVALID_ORDER(false,2221,"지원하지 않는 ORDER 형식입니다."),
     GET_INVALID_PAGE(false,2222,"PAGE 정보가 잘못되었습니다."),
     GET_OUTBOUND_PAGE(false,2223,"PAGE 범위를 벗어났습니다."),
+    GET_ALL_PAGE(false,2223,"더이상 출력한 PAGE 가 없습니다."),
 
     /**
      * 3000 : Response 오류
@@ -82,6 +83,9 @@ public enum BaseResponseStatus {
     //[PATCH] /store/{storeIdx}
     MODIFY_FAIL_STORENAME(false,4017,"식당이름수정 실패"),
     MODIFY_FAIL_STOREIMGURL(false,4018,"식당ImgUrl 수정 실패"),
+
+    //[POST] /shop
+    INCREASE_FAIL_STORE_ORDER_NUM(false,4019,"식당 주문 수 증가 실패"),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");

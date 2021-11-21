@@ -103,6 +103,32 @@ public class StoreDao {
         , foodIdx,startPage,pageSize);
     }
 
+    public List<GetStoreRes> storeResByIdxPaging(int foodIdx, int last_data_id, int pageSize){
+
+        return this.jdbcTemplate.query("SELECT S.storeImgUrl , S.name, S.availableWay, S.storeStar," +
+                        "S.starNum, ifnull(shortMenu.shortMenuMsg,0) as shortMenuMsg, " +
+                        "S.leastPriceMsg, substr(S.deliveryTipMsg,1,instr(S.deliveryTipMsg,'~')) as deliveryTipMsg, S.deliveryTimeMsg " +
+                        "FROM Store S " +
+                        "LEFT JOIN (SELECT storeIdx, GROUP_CONCAT(name) as shortMenuMsg " +
+                        "            FROM Menu " +
+                        "            GROUP BY storeIdx) shortMenu " +
+                        "ON S.storeIdx = shortMenu.storeIdx " +
+                        "WHERE foodIdx = ? " +
+                        "ORDER BY S.storeIdx " +
+                        "LIMIT ?,?",
+                (rs, rowNum) -> new GetStoreRes(
+                        rs.getString("storeImgUrl"),
+                        rs.getString("name"),
+                        rs.getString("availableWay"),
+                        rs.getString("storeStar"),
+                        rs.getString("starNum"),
+                        rs.getString("shortMenuMsg"),
+                        rs.getString("leastPriceMsg"),
+                        rs.getString("deliveryTipMsg"),
+                        rs.getString("deliveryTimeMsg"))
+                , foodIdx,(last_data_id-1),pageSize);
+    }
+
     // INNER FUNCTION
     public Food getFood(int foodIdx){
         String getFoodQuery = "SELECT name , foodImgUrl, status from Food where foodIdx = ?";
@@ -117,7 +143,7 @@ public class StoreDao {
     }
 
     public Store getStore(String storeName){
-        String getStoreQuery = "SELECT foodIdx, name, ownerIdx, storeImgUrl, storeInfoMsg, availableWay, storeStar, starNum, reviewNum," +
+        String getStoreQuery = "SELECT foodIdx, name, ownerIdx, storeImgUrl, storeInfoMsg, availableWay, orderNum, storeStar, starNum, reviewNum," +
                 "deliveryTimeMsg, leastPriceMsg, deliveryTipMsg, status " +
                 "From Store " +
                 "Where name = ?";
@@ -130,6 +156,7 @@ public class StoreDao {
                         rs.getString("storeImgUrl"),
                         rs.getString("storeInfoMsg"),
                         rs.getString("availableWay"),
+                        rs.getInt("orderNum"),
                         rs.getFloat("storeStar"),
                         rs.getInt("starNum"),
                         rs.getInt("reviewNum"),
@@ -141,7 +168,7 @@ public class StoreDao {
     }
 
     public Store getStoreBystoreIdx(int storeIdx){
-        String getStoreQuery = "SELECT foodIdx, name, ownerIdx, storeImgUrl, storeInfoMsg, availableWay, storeStar, starNum, reviewNum," +
+        String getStoreQuery = "SELECT foodIdx, name, ownerIdx, storeImgUrl, storeInfoMsg, availableWay, orderNum, storeStar, starNum, reviewNum," +
                 "deliveryTimeMsg, leastPriceMsg, deliveryTipMsg, status " +
                 "From Store " +
                 "Where storeIdx = ?";
@@ -154,6 +181,7 @@ public class StoreDao {
                         rs.getString("storeImgUrl"),
                         rs.getString("storeInfoMsg"),
                         rs.getString("availableWay"),
+                        rs.getInt("orderNum"),
                         rs.getFloat("storeStar"),
                         rs.getInt("starNum"),
                         rs.getInt("reviewNum"),

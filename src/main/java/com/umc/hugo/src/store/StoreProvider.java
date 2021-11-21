@@ -44,6 +44,15 @@ public class StoreProvider {
         return storeRes;
     }
 
+    public List<GetStoreRes> getStorePaging(int foodIdx, String order, int last_data_id, int pageSize) throws BaseException {
+
+        List<GetStoreRes> storeRes;
+        storeRes = storeDao.storeResByIdxPaging(foodIdx,last_data_id,pageSize);
+
+        return storeRes;
+    }
+
+
     public Food getFood(int foodIdx){
         Food food = storeDao.getFood(foodIdx);
 

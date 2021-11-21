@@ -63,6 +63,44 @@ public class StoreController {
         }
     }
 
+    @GetMapping("/paging/{foodIdx}")
+    public StoreResponse<List<GetStoreRes>,String> getStorePaging(@PathVariable("foodIdx") int foodIdx, @RequestParam(required = false) String order,
+                                                            @RequestParam int last_data_id, @RequestParam int pageSize){
+        try {
+            String has_next = "TRUE";
+
+            // if order parameter is null allocate default value(idx)
+            if (order == null)
+                order = "idx";
+            // order 변수가 idx, star, review 중에 있는지 확인 Validation
+            if (!order.equals("idx") && !order.equals("star") && !order.equals("review")) {
+                return new StoreResponse<>(GET_INVALID_ORDER);
+            }
+            // 입력된 last_data_id 가 0 보다 작은지 확인 Validation
+            if (last_data_id < 0 || pageSize <= 0)
+                return new StoreResponse<>(GET_INVALID_PAGE);
+
+            // 사용자가 입력한 page가 DB page를 초과했는지 확인
+            StoreNum storeNum = storeDao.getStoreNum(foodIdx);
+
+            //
+            if(last_data_id >= storeNum.getStoreNum())
+                throw new BaseException(GET_ALL_PAGE);
+
+            if((last_data_id-1) + pageSize >= storeNum.getStoreNum())
+                has_next = "FALSE";
+
+
+            List<GetStoreRes> storeRes = storeProvider.getStorePaging(foodIdx, order, last_data_id,pageSize);
+            Food food = storeProvider.getFood(foodIdx);
+            String foodName = food.getName();
+
+            return new StoreResponse<>(storeRes, foodName, has_next);
+        } catch (BaseException exception) {
+            return new StoreResponse<>((exception.getStatus()));
+        }
+    }
+
     @ResponseBody
     @PostMapping("/add")
     public BaseResponse<PostStoreRes> postStore(@RequestBody PostStoreReq postStoreReq) throws BaseException {

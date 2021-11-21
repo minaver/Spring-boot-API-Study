@@ -23,6 +23,7 @@ public class Store {
     private String storeImgUrl;
     private String storeInfoMsg;
     private String availableWay;
+    private int orderNum;
     private float storeStar;
     private int starNum;
     private int reviewNum;
