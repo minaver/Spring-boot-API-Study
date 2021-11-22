@@ -52,6 +52,12 @@ public class StoreProvider {
         return storeRes;
     }
 
+    public StoreNum getStoreNum(int foodIdx){
+        StoreNum storeNum = storeDao.getStoreNum(foodIdx);
+
+        return storeNum;
+    }
+
 
     public Food getFood(int foodIdx){
         Food food = storeDao.getFood(foodIdx);

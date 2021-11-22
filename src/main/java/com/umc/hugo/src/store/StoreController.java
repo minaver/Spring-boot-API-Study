@@ -81,7 +81,7 @@ public class StoreController {
                 return new StoreResponse<>(GET_INVALID_PAGE);
 
             // 사용자가 입력한 page가 DB page를 초과했는지 확인
-            StoreNum storeNum = storeDao.getStoreNum(foodIdx);
+            StoreNum storeNum = storeProvider.getStoreNum(foodIdx);
 
             //
             if(last_data_id >= storeNum.getStoreNum())
