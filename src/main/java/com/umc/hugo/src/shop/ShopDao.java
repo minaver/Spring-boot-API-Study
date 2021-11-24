@@ -34,7 +34,7 @@ public class ShopDao {
         String increaseStoreOrderNumQuery = "update Store S " +
                                             "inner join Menu M " +
                                             "on S.storeIdx = M.storeIdx " +
-                                            "set S.orderIdx = S.orderIdx + 1 " +
+                                            "set S.orderNum = S.orderNum + 1 " +
                                             "where M.menuIdx = ? ";
         Object[] increaseStoreOrderNumParams = new Object[]{postShopReq.getMenuIdx()};
 
