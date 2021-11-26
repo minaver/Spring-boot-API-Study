@@ -86,6 +86,7 @@ public enum BaseResponseStatus {
 
     //[POST] /shop
     INCREASE_FAIL_STORE_ORDER_NUM(false,4019,"식당 주문 수 증가 실패"),
+    ADD_FAIL_STOP(false,4020,"신규 주문 추가 실패"),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
