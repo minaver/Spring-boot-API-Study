@@ -43,7 +43,7 @@ public class OwnerProvider {
             throw new BaseException(PASSWORD_DECRYPTION_ERROR);
         }
 
-        if (postLoginReq.getPassword().equals(password)) { //비말번호가 일치한다면 userIdx를 가져온다.
+        if (postLoginReq.getPassword().equals(password)) { //비말번호가 일치한다면 ownerIdx를 가져온다.
             int ownerIdx = ownerDao.getPwdByEmail(postLoginReq).getOwnerIdx();
             String jwt = jwtServiceOwner.createJwt(ownerIdx);
             return new PostLoginRes(ownerIdx,jwt);

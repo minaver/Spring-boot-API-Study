@@ -150,14 +150,14 @@ public class OwnerController {
      * 유저정보변경 API
      * [PATCH] /users/:userIdx
      */
-    // 1. 유저 이름 변경
+    // 1. owner 이름 변경
     @ResponseBody
     @PatchMapping("/name/{ownerIdx}")
     public BaseResponse<String> modifyOwnerName(@PathVariable("ownerIdx") int ownerIdx, @RequestBody Owner owner) {
         try {
             //jwt에서 idx 추출.
             int ownerIdxByJwt = jwtServiceOwner.getOwnerIdx();
-            //userIdx와 접근한 유저가 같은지 확인
+            //ownerIdx와 접근한 owner가 같은지 확인
             if(ownerIdx != ownerIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
