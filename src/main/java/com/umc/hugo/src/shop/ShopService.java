@@ -23,10 +23,15 @@ public class ShopService {
     }
 
     // POST
-    @Transactional // <- 안 걸린다...
+    @Transactional(rollbackOn = Exception.class)
     public PostShopRes postShop(PostShopReq postShopReq) throws BaseException {
         // 1. shop DB에 결재 내역 저장
-        int shopIdx = shopDao.addShop(postShopReq);
+        int shopIdx;
+        try{
+            shopIdx = shopDao.addShop(postShopReq);
+        } catch (Exception exception){
+            throw new BaseException(ADD_FAIL_STOP);
+        }
 
         // 2. store DB에 orderNum 증가
         try {
