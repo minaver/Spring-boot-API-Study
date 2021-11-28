@@ -192,6 +192,33 @@ public class StoreDao {
                 ),storeIdx);
     }
 
+    public Store getStoreByMenuIdx(int menuIdx){ // DB 연결 실패 문제
+        String getStoreQuery = "SELECT S.foodIdx, S.name, S.ownerIdx, S.storeImgUrl, S.storeInfoMsg, S.availableWay, S.orderNum, S.storeStar, S.starNum, S.reviewNum," +
+                "S.deliveryTimeMsg, S.leastPriceMsg, S.deliveryTipMsg, S.status " +
+                "From Store S " +
+                "INNER JOIN MENU M " +
+                "ON S.storeIdx = M.storeIdx " +
+                "Where menuIdx = ?";
+
+        return (Store) this.jdbcTemplate.queryForObject(getStoreQuery,
+                (rs, rowNum) -> new Store(
+                        rs.getInt("foodIdx"),
+                        rs.getString("name"),
+                        rs.getInt("ownerIdx"),
+                        rs.getString("storeImgUrl"),
+                        rs.getString("storeInfoMsg"),
+                        rs.getString("availableWay"),
+                        rs.getInt("orderNum"),
+                        rs.getFloat("storeStar"),
+                        rs.getInt("starNum"),
+                        rs.getInt("reviewNum"),
+                        rs.getString("deliveryTimeMsg"),
+                        rs.getInt("leastPriceMsg"),
+                        rs.getString("deliveryTipMsg"),
+                        rs.getString("status")
+                ),menuIdx);
+    }
+
     public StoreNum getStoreNum(int foodIdx){
         String getStoreNumQuery = "SELECT count(*) as storeNum FROM Store Where foodIdx = ?";
 

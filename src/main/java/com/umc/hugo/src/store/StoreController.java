@@ -133,7 +133,6 @@ public class StoreController {
         try {
             // jwt로 valid한 owner가 접근하는지 확인
             // jwt에서 owneridx 추출.
-
             // 수정하고자 하는 Store의 ownerIdx 값을 가져온다.
             Store targetStore = storeDao.getStoreBystoreIdx(storeIdx);
             int ownerIdx = targetStore.getOwnerIdx();
