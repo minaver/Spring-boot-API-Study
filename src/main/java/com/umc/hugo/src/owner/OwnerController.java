@@ -78,7 +78,7 @@ public class OwnerController {
 
     /**
      * 로그인 API
-     * [POST] /users/log-in
+     * [POST] /owners/log-in
      */
     @ResponseBody
     @PostMapping("/log-in")

@@ -2,6 +2,8 @@ package com.umc.hugo.src.menu;
 
 import com.umc.hugo.config.BaseException;
 import com.umc.hugo.src.menu.model.*;
+import com.umc.hugo.src.store.Store;
+import com.umc.hugo.src.store.StoreDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,13 @@ public class MenuService {
     final Logger logger = LoggerFactory.getLogger(this.getClass()); // Log 처리부분: Log를 기록하기 위해 필요한 함수입니다.
 
     private final MenuDao menuDao;
+    private final StoreDao storeDao;
     private final MenuProvider menuProvider;
 
     @Autowired
-    public MenuService(MenuDao menuDao, MenuProvider menuProvider){
+    public MenuService(MenuDao menuDao, StoreDao storeDao, MenuProvider menuProvider){
         this.menuDao = menuDao;
+        this.storeDao = storeDao;
         this.menuProvider = menuProvider;
     }
 
@@ -72,5 +76,16 @@ public class MenuService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public Store getStoreByMenuIdx(int menuIdx) throws BaseException{
+        try{
+            Store store = storeDao.getStoreByMenuIdx(menuIdx);
+            return store;
+        }catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
 
 }

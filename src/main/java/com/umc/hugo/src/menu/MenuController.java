@@ -6,6 +6,7 @@ import com.umc.hugo.config.MenuResponse;
 import com.umc.hugo.src.food.Food;
 import com.umc.hugo.src.menu.model.*;
 import com.umc.hugo.src.store.Store;
+import com.umc.hugo.util.JwtServiceOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,11 +22,13 @@ public class MenuController {
 
     private MenuProvider menuProvider;
     private MenuService menuService;
+    private JwtServiceOwner jwtServiceOwner;
 
     @Autowired
-    public MenuController(MenuProvider menuProvider,MenuService menuService){
+    public MenuController(MenuProvider menuProvider,MenuService menuService,JwtServiceOwner jwtServiceOwner){
         this.menuProvider = menuProvider;
         this.menuService = menuService;
+        this.jwtServiceOwner = jwtServiceOwner;
     }
 
     @GetMapping("/{store}")
@@ -82,6 +85,18 @@ public class MenuController {
     @PatchMapping("name/{menuIdx}")
     public BaseResponse<String> modifyMenuName(@PathVariable("menuIdx") int menuIdx, @RequestBody Menu menu){
         try {
+            // jwt로 valid한 owner가 접근하는지 확인
+            // jwt에서 owneridx 추출.
+            // 수정하고자 하는 Store의 ownerIdx 값을 가져온다.
+            Store targetStore = menuService.getStoreByMenuIdx(menuIdx);
+            int ownerIdx = targetStore.getOwnerIdx();
+
+            int ownerIdxByJwt = jwtServiceOwner.getOwnerIdx();
+            //ownerIdx와 접근한 owner가 같은지 확인
+            if( ownerIdx != ownerIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
             PatchMenuReq patchMenuReq = new PatchMenuReq(menuIdx, menu.getName());
             menuService.modifyMenu(patchMenuReq);
 
@@ -116,6 +131,18 @@ public class MenuController {
         //**
 
         try {
+            // jwt로 valid한 owner가 접근하는지 확인
+            // jwt에서 owneridx 추출.
+            // 수정하고자 하는 Store의 ownerIdx 값을 가져온다.
+            Store targetStore = menuService.getStoreByMenuIdx(menuIdx);
+            int ownerIdx = targetStore.getOwnerIdx();
+
+            int ownerIdxByJwt = jwtServiceOwner.getOwnerIdx();
+            //ownerIdx와 접근한 owner가 같은지 확인
+            if( ownerIdx != ownerIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
             PatchMenuImgUrlReq patchMenuImgUrlReq = new PatchMenuImgUrlReq(menuIdx, menu.getMenuImgUrl());
             menuService.modifyMenuImgUrl(patchMenuImgUrlReq);
 
@@ -132,6 +159,18 @@ public class MenuController {
     public BaseResponse<String> modifyMenuStatus(@PathVariable("menuIdx") int menuIdx, @RequestBody Menu menu)  {
 
         try {
+            // jwt로 valid한 owner가 접근하는지 확인
+            // jwt에서 owneridx 추출.
+            // 수정하고자 하는 Store의 ownerIdx 값을 가져온다.
+            Store targetStore = menuService.getStoreByMenuIdx(menuIdx);
+            int ownerIdx = targetStore.getOwnerIdx();
+
+            int ownerIdxByJwt = jwtServiceOwner.getOwnerIdx();
+            //ownerIdx와 접근한 owner가 같은지 확인
+            if( ownerIdx != ownerIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
             PatchMenuStatusReq patchMenuStatusReq = new PatchMenuStatusReq(menuIdx, menu.getStatus());
             menuService.modifyMenuStatus(patchMenuStatusReq);
 
