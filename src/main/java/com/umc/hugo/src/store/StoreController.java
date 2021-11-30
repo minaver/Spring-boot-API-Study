@@ -121,6 +121,9 @@ public class StoreController {
             return new BaseResponse<>(POST_INVALID_URL);
         }
 
+        // 이미 존재하는 가게인지 Validation
+        
+
         PostStoreRes postStoreRes = storeService.postStore(postStoreReq);
         return new BaseResponse<>(postStoreRes);
     }

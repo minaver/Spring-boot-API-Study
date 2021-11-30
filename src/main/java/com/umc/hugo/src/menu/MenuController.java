@@ -75,6 +75,8 @@ public class MenuController {
             return new BaseResponse<>(POST_INVALID_URL);
         }
 
+        // 이미 menu가 있는지 validation
+
         PostMenuRes postMenuRes = menuService.postMenu(postMenuReq);
         return new BaseResponse<>(postMenuRes);
     }
