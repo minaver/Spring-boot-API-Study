@@ -34,6 +34,13 @@ public class StoreService {
         return postStoreRes;
     }
 
+    public int checkExistStore(){
+
+        storeDao.checkExistStore();
+
+        return 0;
+    }
+
     //PATCH
     // 1. modify 식당 이름
     public void modifyStore(PatchStoreReq patchStoreReq) throws BaseException {

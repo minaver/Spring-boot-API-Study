@@ -142,7 +142,7 @@ public class StoreDao {
         ,foodIdx);
     }
 
-    public Store getStore(String storeName){
+    public Store getStore(String storeName) {
         String getStoreQuery = "SELECT foodIdx, name, ownerIdx, storeImgUrl, storeInfoMsg, availableWay, orderNum, storeStar, starNum, reviewNum," +
                 "deliveryTimeMsg, leastPriceMsg, deliveryTipMsg, status " +
                 "From Store " +
@@ -164,7 +164,7 @@ public class StoreDao {
                         rs.getInt("leastPriceMsg"),
                         rs.getString("deliveryTipMsg"),
                         rs.getString("status")
-                ),storeName);
+                ), storeName);
     }
 
     public Store getStoreBystoreIdx(int storeIdx){
@@ -226,6 +226,15 @@ public class StoreDao {
                 (rs,rowNum) -> new StoreNum(
                         rs.getInt("storeNum")
                 ),foodIdx);
+    }
+
+    public int checkExistStore(){
+
+        List<Object> existStoreName = this.jdbcTemplate.query("SELECT name FROM Store",(rs,rowNum) -> new StoreNameString(rs.getString("name")));
+        for(int i=0;i<existStoreName.size();i++)
+            System.out.println(existStoreName.get(i).toString());
+
+        return 0;
     }
 
 //    public StoreName checkStore(String storeName){

@@ -35,6 +35,15 @@ public class StoreController {
         this.jwtServiceOwner = jwtServiceOwner;
     }
 
+    //TEST GET
+    @GetMapping("/test")
+    public int testStore(){
+
+        storeService.checkExistStore();
+
+        return 0;
+    }
+
     // 모든 식당 출력하는 GET
     // 출력 방법은 idx, star, review 로 가능하다.
     // + 총 가게 수 몇개인지 출력하는문 함께 추가
@@ -122,7 +131,7 @@ public class StoreController {
         }
 
         // 이미 존재하는 가게인지 Validation
-        
+
 
         PostStoreRes postStoreRes = storeService.postStore(postStoreReq);
         return new BaseResponse<>(postStoreRes);
