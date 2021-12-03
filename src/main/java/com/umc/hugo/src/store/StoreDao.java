@@ -4,9 +4,12 @@ import com.umc.hugo.src.food.Food;
 import com.umc.hugo.src.store.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -192,7 +195,7 @@ public class StoreDao {
                 ),storeIdx);
     }
 
-    public Store getStoreByMenuIdx(int menuIdx){ // DB 연결 실패 문제
+    public Store getStoreByMenuIdx(int menuIdx){
         String getStoreQuery = "SELECT S.foodIdx, S.name, S.ownerIdx, S.storeImgUrl, S.storeInfoMsg, S.availableWay, S.orderNum, S.storeStar, S.starNum, S.reviewNum," +
                 "S.deliveryTimeMsg, S.leastPriceMsg, S.deliveryTipMsg, S.status " +
                 "From Store S " +
@@ -228,11 +231,23 @@ public class StoreDao {
                 ),foodIdx);
     }
 
-    public int checkExistStore(){
 
-        List<Object> existStoreName = this.jdbcTemplate.query("SELECT name FROM Store",(rs,rowNum) -> new StoreNameString(rs.getString("name")));
+    public int checkExistStore() { // jdbc에서 여러개의 객체를 받을 때는 jdbcTemplate.query()를 사용한다.
+
+        List<StoreNameString> existStoreName = this.jdbcTemplate.query("SELECT name FROM Store ",
+                new RowMapper<StoreNameString>() {
+                    // interface method
+                    public StoreNameString mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        StoreNameString storeNameString = new StoreNameString();
+
+                        storeNameString.setName(rs.getString("name"));
+
+                        return storeNameString;
+                    }
+                });
+
         for(int i=0;i<existStoreName.size();i++)
-            System.out.println(existStoreName.get(i).toString());
+            System.out.println(existStoreName.get(i).getName());
 
         return 0;
     }
